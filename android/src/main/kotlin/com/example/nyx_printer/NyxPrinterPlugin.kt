@@ -22,25 +22,22 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class NyxPrinterPlugin: FlutterPlugin, MethodCallHandler {
-  private lateinit
-  var channel: MethodChannel
-  private
-  var printerService: IPrinterService ? = null
-  private lateinit
-  var appContext: Context
-  private val version = arrayOfNulls < String > (1)
+  private lateinit var channel: MethodChannel
+  private var printerService: IPrinterService? = null
+  private lateinit var appContext: Context
+  private val version = arrayOfNulls<String>(1)
   private val singleThreadExecutor: ExecutorService = Executors.newSingleThreadExecutor()
   private val handler = Handler(Looper.getMainLooper())
 
   private val connService = object: ServiceConnection {
-    override fun onServiceDisconnected(name: ComponentName ? ) {
+    override fun onServiceDisconnected(name: ComponentName?) {
       printerService = null
       handler.postDelayed({
         startService(appContext)
       }, 5000)
     }
 
-    override fun onServiceConnected(name: ComponentName ? , service : IBinder ? ) {
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
       printerService = IPrinterService.Stub.asInterface(service)
     }
   }
@@ -78,52 +75,52 @@ class NyxPrinterPlugin: FlutterPlugin, MethodCallHandler {
     try {
       when(call.method) {
         "getVersion" -> {
-          val ret = printerService?.getPrinterVersion(version) ? : -1
+          val ret = printerService?.getPrinterVersion(version) ?: -1
           result.success(ret)
         }
         "printText" -> {
           val textFormat = PrintTextFormat().apply {
-            ali = call.argument < Int > ("align") ? : 0 // Default to 0 if null
-            textSize = call.argument("textSize") ? : 80
-            textScaleX = call.argument < Double > ("textScaleX")?.toFloat() ? : 1 f
-            textScaleY = call.argument < Double > ("textScaleY")?.toFloat() ? : 1 f
-            letterSpacing = call.argument < Double > ("letterSpacing")?.toFloat() ? : 0 f
-            lineSpacing = call.argument < Double > ("lineSpacing")?.toFloat() ? : 0 f
-            topPadding = call.argument("topPadding") ? : 0
-            leftPadding = call.argument("leftPadding") ? : 0
-            style = call.argument < Int > ("style") ? : 0 // Default to 0 if null
-            font = call.argument < Int > ("font") ? : 0 // Default to 0 if null
+            ali = call.argument<Int>("align") ?: 0
+            textSize = call.argument("textSize") ?: 80
+            textScaleX = call.argument<Double>("textScaleX")?.toFloat() ?: 1f
+            textScaleY = call.argument<Double>("textScaleY")?.toFloat() ?: 1f
+            letterSpacing = call.argument<Double>("letterSpacing")?.toFloat() ?: 0f
+            lineSpacing = call.argument<Double>("lineSpacing")?.toFloat() ?: 0f
+            topPadding = call.argument("topPadding") ?: 0
+            leftPadding = call.argument("leftPadding") ?: 0
+            style = call.argument<Int>("style") ?: 0
+            font = call.argument<Int>("font") ?: 0
           }
 
-          val ret = printerService?.printText(call.argument < String > ("text") ? : "", textFormat) ? : -1
+          val ret = printerService?.printText(call.argument<String>("text") ?: "", textFormat) ?: -1
           if (ret == 0) {
-            paperOutText(call.argument("textSize") ? : 80)
+            paperOutText(call.argument("textSize") ?: 80)
           }
           result.success(ret)
         }
         "printBarcode" -> {
           val ret = printerService?.printBarcode(
-            call.argument("text") ? : "",
-            call.argument < Int > ("width") ? : 100, // Default value to ensure non-null Int
-            call.argument < Int > ("height") ? : 50, // Default value to ensure non-null Int
+            call.argument("text") ?: "",
+            call.argument("width") ?: 100,
+            call.argument("height") ?: 50,
             1, 1
-          ) ? : -1
+          ) ?: -1
           result.success(ret)
         }
         "printQrCode" -> {
           val ret = printerService?.printQrCode(
-            call.argument("text") ? : "",
-            call.argument < Int > ("width") ? : 100, // Default value to ensure non-null Int
-            call.argument < Int > ("height") ? : 100, // Default value to ensure non-null Int
+            call.argument("text") ?: "",
+            call.argument("width") ?: 100,
+            call.argument("height") ?: 100,
             1
-          ) ? : -1
+          ) ?: -1
           result.success(ret)
         }
         "printBitmap" -> {
-          val byteArray = call.argument < ByteArray > ("bytes")
+          val byteArray = call.argument<ByteArray>("bytes")
           if (byteArray != null) {
             val decoded = BitmapFactory.decodeStream(ByteArrayInputStream(byteArray))
-            val ret = printerService?.printBitmap(decoded, 1, 1) ? : -1
+            val ret = printerService?.printBitmap(decoded, 1, 1) ?: -1
             result.success(ret)
           } else {
             result.error("INVALID_ARGUMENT", "Bytes are null", null)
