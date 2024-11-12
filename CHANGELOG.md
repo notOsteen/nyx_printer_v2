@@ -1,4 +1,4 @@
-## 1.10
+## 1.1.0
 
 - Fixed line spacing issue in NB55
 - Implemented paperOut
