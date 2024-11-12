@@ -78,6 +78,10 @@ class NyxPrinterPlugin: FlutterPlugin, MethodCallHandler {
           val ret = printerService?.getPrinterVersion(version) ?: -1
           result.success(ret)
         }
+        "paperOut" ->{
+          val ret = printerService?.paperOut(80) ?: -1
+          result.success(ret)
+        }
         "printText" -> {
           val textFormat = PrintTextFormat().apply {
             ali = call.argument<Int>("align") ?: 0
@@ -93,9 +97,6 @@ class NyxPrinterPlugin: FlutterPlugin, MethodCallHandler {
           }
 
           val ret = printerService?.printText(call.argument<String>("text") ?: "", textFormat) ?: -1
-          if (ret == 0) {
-            paperOutText(call.argument("textSize") ?: 80)
-          }
           result.success(ret)
         }
         "printBarcode" -> {
