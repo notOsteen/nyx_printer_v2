@@ -83,4 +83,15 @@ class MethodChannelNyxPrinter extends NyxPrinterPlatform {
         await methodChannel.invokeMethod<int?>('printBitmap', {"bytes": bytes});
     return result;
   }
+
+  @override
+
+  /// Invokes the 'paperOut' method on the platform's method channel to check paper status.
+  ///
+  /// Returns an [int?], where 0 indicates paper is present, any other value indicates
+  /// paper is out, or null if the operation fails or encounters an error.
+  Future<int?> paperOut() async {
+    final result = await methodChannel.invokeMethod<int?>('paperOut');
+    return result;
+  }
 }

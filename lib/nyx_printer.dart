@@ -48,4 +48,14 @@ class NyxPrinter {
   Future<int?> printImage(Uint8List bytes) {
     return NyxPrinterPlatform.instance.printBitmap(bytes);
   }
+
+  /// Checks if the printer is out of paper.
+  ///
+  /// Returns 0 if paper is present, or an error code if paper is out.
+  ///
+  /// This function communicates with the NyxPrinter platform to determine
+  /// the printer's paper status. A `null` result indicates an unexpected issue.
+  Future<int?> paperOut() {
+    return NyxPrinterPlatform.instance.paperOut();
+  }
 }

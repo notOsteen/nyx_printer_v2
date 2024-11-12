@@ -84,4 +84,12 @@ abstract class NyxPrinterPlatform extends PlatformInterface {
   Future<int?> printBitmap(Uint8List bytes) {
     return instance.printBitmap(bytes);
   }
+
+  /// Checks if the printer is out of paper.
+  ///
+  /// Returns an [int] where 0 indicates paper is present,
+  /// any other value signifies paper is out, or null if the operation fails.
+  Future<int?> paperOut() {
+    return instance.paperOut();
+  }
 }
